@@ -1,0 +1,46 @@
+:root {
+    --base: #eff1f5;
+    --mantle: #e6e9ef;
+    --crust: #dce0e8;
+    --surface: #acb0be;
+    
+    --green: #a6d189;
+    --red: #e78284;
+    
+    --text: #4c4f69;
+    --subtext: #8f91a0;
+}
+
+body {
+    height: 500px;
+    width: 300px;
+    padding: 50px;
+
+    font-family: monospace;
+    background-color: var(--base);
+    color: var(--text);
+}
+
+.screen {
+    height: 100%;
+    width: 100%;
+}
+
+.title {
+    font-size: 48px;
+    margin-bottom: 0px;
+}
+
+.description {
+    margin-top: 0px;
+    color: var(--subtext);
+    font-size: 24px;
+}
+
+.game-buttons {
+    margin-top: 20px;
+}
+
+.game-button {
+    margin-bottom: 5px;
+}
