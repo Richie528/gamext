@@ -1,5 +1,5 @@
 let rootElement = document.querySelector(":root");
-let screens = document.querySelectorAll(".screens");
+let homeScreen = document.getElementById("home-screen");
 
 // THEMES
 
@@ -31,3 +31,21 @@ themeButton.onclick = function() {
 displayTheme();
 
 // SNAKE
+
+let snakeScreen = document.getElementById("snake-screen");
+let snakeButton = document.getElementById("snake-button");
+
+function runSnake() {
+    // DOESNT WORK
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Backspace") {
+            snakeScreen.style.visibility = "hidden";
+            homeScreen.style.visibility = "visible";
+        }
+    })
+}
+
+snakeButton.onclick = function() {
+    homeScreen.style.visibility = "hidden";
+    snakeScreen.style.visibility = "visible";
+}

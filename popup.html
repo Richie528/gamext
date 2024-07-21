@@ -6,17 +6,15 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <div class="screen" id="home">
+    <div class="screen" id="home-screen">
         <h1 class="title">Gamext</h1>
         <div class="description">
             🎮
-            <a href="https://github.com/Richie528/gamext" class="github-link">
-                https://github.com/Richie528/gamext
-            </a>
+            <a href="https://github.com/Richie528/gamext" class="github-link">github.com/Richie528/gamext</a>
             🕹️
         </div>
         <div class="game-buttons">
-            <button class="game-button" id="snake">snake</button>
+            <button class="game-button" id="snake-button">🐍Snake</button>
 
             <button class="game-button">drink</button>
             <button class="game-button">hamburger</button>
@@ -33,6 +31,15 @@
         </div>
         <div class="theme-button">
             ☼
+        </div>
+    </div>
+
+    <div class="screen" id="snake-screen" style="visibility: hidden">
+        <div class="game-title">SNAKE</div>
+        <div class="game-instructions">
+            <div><div class="key-icon"> esc </div> close game</div>
+            <div><div class="key-icon"> enter </div> close extension</div> 
+            <div><div class="key-icon"> w, a, s, d </div> up, left, down, right</div>
         </div>
     </div>
     <script src="popup.js"></script>
