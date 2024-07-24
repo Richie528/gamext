@@ -23,6 +23,10 @@ function toggleTheme() {
     currentTheme = (currentTheme) ? 0 : 1;
     displayTheme();
 }
+function colour(key) {
+    if (currentTheme == 0) return lightMode[themeKeys.indexOf(key)];
+    return darkMode[themeKeys.indexOf(key)];
+}
 
 themeButton.onclick = function() {
     toggleTheme();
@@ -34,18 +38,48 @@ displayTheme();
 
 let snakeScreen = document.getElementById("snake-screen");
 let snakeButton = document.getElementById("snake-button");
+let snakeCanvas = document.getElementById("snake-canvas");
+let snakeContext = snakeCanvas.getContext("2d");
+snakeContext.scale(1, 0.5);
+
+let snakeSnake = [];
+let snakeApple = [];
+
+function resetSnakeVars() {
+
+}
+function resetSnakeScreen() {
+    snakeContext.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+}
+function clearSnakeScreen() {
+    snakeContext.clearRect(2.5, 2.5, 295, 295);
+}
+function drawSnakeBorders() {
+    snakeContext.strokeStyle = colour("--text");
+    snakeContext.lineWidth = 5;
+    snakeContext.moveTo(0, 0);
+    snakeContext.lineTo(300, 0);
+    snakeContext.lineTo(300, 300);
+    snakeContext.lineTo(0, 300);
+    snakeContext.lineTo(0, 0);
+    snakeContext.stroke();
+}
+function drawSnake() {
+
+}
+function drawApple() {
+
+}
 
 function runSnake() {
-    // DOESNT WORK
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "Backspace") {
-            snakeScreen.style.visibility = "hidden";
-            homeScreen.style.visibility = "visible";
-        }
-    })
+    console.log("SNAKE");
+    resetSnakeScreen();
+    drawSnakeBorders();
+    clearSnakeScreen();
 }
 
 snakeButton.onclick = function() {
     homeScreen.style.visibility = "hidden";
     snakeScreen.style.visibility = "visible";
+    runSnake();
 }

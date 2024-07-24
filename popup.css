@@ -93,7 +93,14 @@ body {
 .key-icon {
     display: inline-block;
     border: 1px solid var(--crust);
+    color: var(--subtext);
     padding: 1px;
     margin: 2px;
     white-space: pre;
+}
+
+.game-canvas {
+    margin-top: 10px;
+    width: 300px;
+    height: 300px;
 }
