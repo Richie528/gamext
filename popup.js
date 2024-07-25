@@ -66,10 +66,14 @@ function generateSnake() {
     }
 }
 function generateApple() {
+    snakeApple = [
+        Math.floor(Math.random() * 15),
+        Math.floor(Math.random() * 15)
+    ];
     while (snakeSnake.includes(snakeApple)) {
         snakeApple = [
-            Math.floor(Math.random * 15),
-            Math.floor(Math.random * 15)
+            Math.floor(Math.random() * 15),
+            Math.floor(Math.random() * 15)
         ];
     }
 }
@@ -109,7 +113,33 @@ function drawApple() {
         snakeScaleY
     );
 }
+function snakeTick() {
+    // move snake
+    let newSnakeCell = [
+        snakeSnake[snakeLength - 1][0] + snakeDirections[snakeDirection][0],
+        snakeSnake[snakeLength - 1][1] + snakeDirections[snakeDirection][1]
+    ];
 
+    if (snakeApple === newSnakeCell) {
+        snakeLength += 1;
+    } else {
+        snakeSnake.shift();
+    }
+
+    if (snakeSnake.includes(newSnakeCell)) {
+        // DIE
+    }
+
+    snakeSnake.push(newSnakeCell);
+    console.log(snakeSnake.length);
+    console.log(newSnakeCell);
+
+    // draw
+    console.log(snakeLength);
+    clearSnakeScreen();
+    drawSnake();
+    drawApple();
+}
 function runSnake() {
     console.log("SNAKE");
 
@@ -119,12 +149,12 @@ function runSnake() {
 
     resetSnakeScreen();
     drawSnakeBorders();
-    
+    drawSnake();
+    drawApple();
+
     setInterval(function() {
-        clearSnakeScreen();
-        drawSnake();
-        drawApple();
-    }, 100);
+        snakeTick();
+    }, 500);
 }
 
 snakeButton.onclick = function() {
