@@ -42,11 +42,36 @@ let snakeCanvas = document.getElementById("snake-canvas");
 let snakeContext = snakeCanvas.getContext("2d");
 snakeContext.scale(1, 0.5);
 
+const snakeDirections = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+const snakeStartPos = [7, 3];
+const snakeOffsetX = 2.5;
+const snakeOffsetY = 2.5;
+const snakeScaleX = 295 / 15;
+const snakeScaleY = 295 / 15;
+
+let snakeDirection = 0;
+let snakeLength = 3;
 let snakeSnake = [];
 let snakeApple = [];
 
 function resetSnakeVars() {
-
+    snakeDirection = 0;
+    snakeLength = 3;
+    snakeSnake = [];
+    snakeApple = [];
+}
+function generateSnake() {
+    for (let i = snakeLength - 1; i >= 0; i--) {
+        snakeSnake.push([snakeStartPos[0], snakeStartPos[1] - i]);
+    }
+}
+function generateApple() {
+    while (snakeSnake.includes(snakeApple)) {
+        snakeApple = [
+            Math.floor(Math.random * 15),
+            Math.floor(Math.random * 15)
+        ];
+    }
 }
 function resetSnakeScreen() {
     snakeContext.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
@@ -65,17 +90,41 @@ function drawSnakeBorders() {
     snakeContext.stroke();
 }
 function drawSnake() {
-
+    snakeContext.fillStyle = colour("--green");
+    for (let i = 0; i < snakeLength; i++) {
+        snakeContext.fillRect(
+            snakeOffsetX + snakeSnake[i][0] * snakeScaleX,
+            snakeOffsetY + snakeSnake[i][1] * snakeScaleY,
+            snakeScaleX,
+            snakeScaleY
+        );
+    }
 }
 function drawApple() {
-
+    snakeContext.fillStyle = colour("--red");
+    snakeContext.fillRect(
+        snakeOffsetX + snakeApple[0] * snakeScaleX,
+        snakeOffsetY + snakeApple[1] * snakeScaleY,
+        snakeScaleX,
+        snakeScaleY
+    );
 }
 
 function runSnake() {
     console.log("SNAKE");
+
+    resetSnakeVars();
+    generateSnake();
+    generateApple();
+
     resetSnakeScreen();
     drawSnakeBorders();
-    clearSnakeScreen();
+    
+    setInterval(function() {
+        clearSnakeScreen();
+        drawSnake();
+        drawApple();
+    }, 100);
 }
 
 snakeButton.onclick = function() {
