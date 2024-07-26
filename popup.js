@@ -36,129 +36,128 @@ displayTheme();
 
 // SNAKE
 
-let snakeScreen = document.getElementById("snake-screen");
-let snakeButton = document.getElementById("snake-button");
-let snakeCanvas = document.getElementById("snake-canvas");
-let snakeContext = snakeCanvas.getContext("2d");
-snakeContext.scale(1, 0.5);
+let snake = {};
 
-const snakeDirections = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-const snakeStartPos = [7, 3];
-const snakeOffsetX = 2.5;
-const snakeOffsetY = 2.5;
-const snakeScaleX = 295 / 15;
-const snakeScaleY = 295 / 15;
+snake.screen = document.getElementById("snake-screen");
+snake.button = document.getElementById("snake-button");
+snake.canvas = document.getElementById("snake-canvas");
+snake.context = snake.canvas.getContext("2d");
+snake.context.scale(1, 0.5);
 
-let snakeDirection = 0;
-let snakeLength = 3;
-let snakeSnake = [];
-let snakeApple = [];
+snake.directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+snake.startPos = [7, 3];
+snake.offsetX = 2.5;
+snake.offsetY = 2.5;
+snake.scaleX = 295 / 15;
+snake.scaleY = 295 / 15;
 
-function resetSnakeVars() {
-    snakeDirection = 0;
-    snakeLength = 3;
-    snakeSnake = [];
-    snakeApple = [];
+snake.direction = 0;
+snake.size = 3;
+snake.snake = [];
+snake.apple = [];
+
+snake.resetVars = function () {
+    this.direction = 0;
+    this.size = 3;
+    this.snake = [];
+    this.apple = [];
 }
-function generateSnake() {
-    for (let i = snakeLength - 1; i >= 0; i--) {
-        snakeSnake.push([snakeStartPos[0], snakeStartPos[1] - i]);
+snake.generateSnake = function() {
+    for (let i = this.size - 1; i >= 0; i--) {
+        this.snake.push([this.startPos[0], this.startPos[1] - i]);
     }
 }
-function generateApple() {
-    snakeApple = [
+snake.generateApple = function() {
+    this.apple = [
         Math.floor(Math.random() * 15),
         Math.floor(Math.random() * 15)
     ];
-    while (snakeSnake.includes(snakeApple)) {
-        snakeApple = [
+    while (this.snake.includes(this.apple)) {
+        this.apple = [
             Math.floor(Math.random() * 15),
             Math.floor(Math.random() * 15)
         ];
     }
 }
-function resetSnakeScreen() {
-    snakeContext.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+snake.resetScreen = function() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 }
-function clearSnakeScreen() {
-    snakeContext.clearRect(2.5, 2.5, 295, 295);
+snake.clearScreen = function() {
+    this.context.clearRect(2.5, 2.5, 295, 295);
 }
-function drawSnakeBorders() {
-    snakeContext.strokeStyle = colour("--text");
-    snakeContext.lineWidth = 5;
-    snakeContext.moveTo(0, 0);
-    snakeContext.lineTo(300, 0);
-    snakeContext.lineTo(300, 300);
-    snakeContext.lineTo(0, 300);
-    snakeContext.lineTo(0, 0);
-    snakeContext.stroke();
+snake.drawBorders = function() {
+    this.context.strokeStyle = colour("--text");
+    this.context.lineWidth = 5;
+    this.context.moveTo(0, 0);
+    this.context.lineTo(300, 0);
+    this.context.lineTo(300, 300);
+    this.context.lineTo(0, 300);
+    this.context.lineTo(0, 0);
+    this.context.stroke();
 }
-function drawSnake() {
-    snakeContext.fillStyle = colour("--green");
-    for (let i = 0; i < snakeLength; i++) {
-        snakeContext.fillRect(
-            snakeOffsetX + snakeSnake[i][0] * snakeScaleX,
-            snakeOffsetY + snakeSnake[i][1] * snakeScaleY,
-            snakeScaleX,
-            snakeScaleY
+snake.drawSnake = function() {
+    this.context.fillStyle = colour("--green");
+    for (let i = 0; i < this.size; i++) {
+        this.context.fillRect(
+            this.offsetX + this.snake[i][0] * this.scaleX,
+            this.offsetY + this.snake[i][1] * this.scaleY,
+            this.scaleX,
+            this.scaleY
         );
     }
 }
-function drawApple() {
-    snakeContext.fillStyle = colour("--red");
-    snakeContext.fillRect(
-        snakeOffsetX + snakeApple[0] * snakeScaleX,
-        snakeOffsetY + snakeApple[1] * snakeScaleY,
-        snakeScaleX,
-        snakeScaleY
+snake.drawApple = function() {
+    this.context.fillStyle = colour("--red");
+    this.context.fillRect(
+        this.offsetX + this.apple[0] * this.scaleX,
+        this.offsetY + this.apple[1] * this.scaleY,
+        this.scaleX,
+        this.scaleY
     );
 }
-function snakeTick() {
+snake.tick = function() {
     // move snake
     let newSnakeCell = [
-        snakeSnake[snakeLength - 1][0] + snakeDirections[snakeDirection][0],
-        snakeSnake[snakeLength - 1][1] + snakeDirections[snakeDirection][1]
+        this.snake[this.size - 1][0] + this.directions[this.direction][0],
+        this.snake[this.size - 1][1] + this.directions[this.direction][1]
     ];
 
-    if (snakeApple === newSnakeCell) {
-        snakeLength += 1;
+    if (this.apple === newSnakeCell) {
+        this.size += 1;
     } else {
-        snakeSnake.shift();
+        this.snake.shift();
     }
 
-    if (snakeSnake.includes(newSnakeCell)) {
+    if (this.snake.includes(newSnakeCell)) {
         // DIE
     }
 
-    snakeSnake.push(newSnakeCell);
-    console.log(snakeSnake.length);
-    console.log(newSnakeCell);
+    this.snake.push(newSnakeCell);
 
     // draw
-    console.log(snakeLength);
-    clearSnakeScreen();
-    drawSnake();
-    drawApple();
+    this.clearScreen();
+    this.drawSnake();
+    this.drawApple();
 }
-function runSnake() {
+snake.run = function() {
     console.log("SNAKE");
 
-    resetSnakeVars();
-    generateSnake();
-    generateApple();
+    this.resetVars();
+    this.generateSnake();
+    this.generateApple();
 
-    resetSnakeScreen();
-    drawSnakeBorders();
-    drawSnake();
-    drawApple();
+    this.resetScreen();
+    this.drawBorders();
+    this.drawSnake();
+    this.drawApple();
 
     setInterval(function() {
-        snakeTick();
+        snake.tick();
     }, 500);
 }
 
-snakeButton.onclick = function() {
+snake.button.onclick = function() {
     homeScreen.style.visibility = "hidden";
-    snakeScreen.style.visibility = "visible";
-    runSnake();
+    snake.screen.style.visibility = "visible";
+    snake.run();
 }
