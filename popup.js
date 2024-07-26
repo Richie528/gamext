@@ -44,27 +44,28 @@ snake.canvas = document.getElementById("snake-canvas");
 snake.context = snake.canvas.getContext("2d");
 snake.context.scale(1, 0.5);
 
-snake.directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-snake.startPos = [7, 3];
+snake.inputKeys = ["w", "a", "s", "d"];
+snake.directions = [[0, -1], [-1, 0], [0, 1], [1, 0]];
+snake.startPos = [4, 7];
 snake.offsetX = 2.5;
 snake.offsetY = 2.5;
 snake.scaleX = 295 / 15;
 snake.scaleY = 295 / 15;
 
-snake.direction = 0;
+snake.direction = 3;
 snake.size = 3;
 snake.snake = [];
 snake.apple = [];
 
 snake.resetVars = function () {
-    this.direction = 0;
+    this.direction = 3;
     this.size = 3;
     this.snake = [];
     this.apple = [];
 }
 snake.generateSnake = function() {
     for (let i = this.size - 1; i >= 0; i--) {
-        this.snake.push([this.startPos[0], this.startPos[1] - i]);
+        this.snake.push([this.startPos[0] - i, this.startPos[1]]);
     }
 }
 snake.generateApple = function() {
@@ -116,6 +117,10 @@ snake.drawApple = function() {
     );
 }
 snake.tick = function() {
+    // take input
+    // if ()
+
+
     // move snake
     let newSnakeCell = [
         this.snake[this.size - 1][0] + this.directions[this.direction][0],
@@ -139,8 +144,20 @@ snake.tick = function() {
     this.drawSnake();
     this.drawApple();
 }
+snakeKeyDownHandler = function(e) {
+    console.log("INPUT");
+    for (let i = 0; i < 4; i++) {
+        if (e.key === snake.inputKeys[i]) {
+            console.log(i);
+            snake.direction = i;
+        }
+    }
+}
 snake.run = function() {
     console.log("SNAKE");
+
+    // add inputs
+    document.addEventListener("keydown", snakeKeyDownHandler, false);
 
     this.resetVars();
     this.generateSnake();
