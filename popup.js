@@ -62,6 +62,7 @@ snake.size = 3;
 snake.snake = [];
 snake.apple = [];
 snake.movementCooldown = false;
+snake.dead = false;
 
 snake.resetVars = function () {
     this.direction = 3;
@@ -99,15 +100,15 @@ snake.generateApple = function() {
         ];
     }
 }
+snake.die = function() {
+    this.dead = true;
+}
 snake.writeScores = function() {
     this.highScoreText.textContent = this.highScore.toString();
     this.scoreText.textContent = this.size.toString();
 }
-snake.resetScreen = function() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-}
 snake.clearScreen = function() {
-    this.context.clearRect(2.5, 2.5, 295, 295);
+    this.context.clearRect(0, 0, 300, 300);
 }
 snake.drawBorders = function() {
     this.context.strokeStyle = colour("--text");
@@ -139,44 +140,53 @@ snake.drawApple = function() {
         this.cellY
     );
 }
-snake.tick = function() {
-    this.movementCooldown = false;
-
-    let newSnakeCell = [
-        this.snake[this.size - 1][0] + this.directions[this.direction][0],
-        this.snake[this.size - 1][1] + this.directions[this.direction][1]
-    ];
-
-    if (this.collision(newSnakeCell, this.apple)) {
-        this.generateApple();
-        this.drawApple();
-        this.size += 1;
-        this.highScore = Math.max(this.highScore, this.size);
-    } else {
-        this.snake.shift();
-    }
-
-    if (this.collisions(this.snake, newSnakeCell) ||
-        newSnakeCell[0] < 0 || 
-        newSnakeCell[1] < 0 || 
-        newSnakeCell[0] >= 15 ||
-        newSnakeCell[1] >= 15
-    ) {
-        console.log("DIE");
-    }
-
-    this.snake.push(newSnakeCell);
-
-    // draw
+snake.draw = function() {
     this.clearScreen();
+    this.drawBorders();
     this.drawSnake();
     this.drawApple();
+}
+snake.tick = function() {
+    if (!this.dead) {
+        this.movementCooldown = false;
+
+        let newSnakeCell = [
+            this.snake[this.size - 1][0] + this.directions[this.direction][0],
+            this.snake[this.size - 1][1] + this.directions[this.direction][1]
+        ];
+
+        if (this.collisions(this.snake, newSnakeCell) ||
+            newSnakeCell[0] < 0 || 
+            newSnakeCell[1] < 0 || 
+            newSnakeCell[0] >= 15 ||
+            newSnakeCell[1] >= 15
+        ) {
+            this.die();
+        }
+
+        if (!this.dead) {
+            if (this.collision(newSnakeCell, this.apple)) {
+                this.generateApple();
+                this.draw();
+                this.size += 1;
+                this.highScore = Math.max(this.highScore, this.size);
+            } else {
+                this.snake.shift();
+            }
+            this.snake.push(newSnakeCell);
+        }
+    }
+
+    // draw
+    this.draw();
     this.writeScores();
 }
 snake.run = function() {
     console.log("SNAKE");
 
-    // add inputs
+    homeScreen.style.visibility = "hidden";
+    snake.screen.style.visibility = "visible";
+
     document.addEventListener("keydown", function(e) {
         for (let i = 0; i < 4; i++) {
             if (e.key === snake.inputKeys[i]) {
@@ -194,12 +204,7 @@ snake.run = function() {
     this.resetVars();
     this.generateSnake();
     this.generateApple();
-
-    this.resetScreen();
-    this.drawBorders();
-    this.drawSnake();
-    this.drawApple();
-
+    this.draw();
     this.writeScores();
 
     setInterval(function() {
@@ -208,7 +213,5 @@ snake.run = function() {
 }
 
 snake.button.onclick = function() {
-    homeScreen.style.visibility = "hidden";
-    snake.screen.style.visibility = "visible";
     snake.run();
 }
