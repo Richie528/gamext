@@ -56,12 +56,26 @@ snake.direction = 3;
 snake.size = 3;
 snake.snake = [];
 snake.apple = [];
+snake.movementCooldown = false;
 
 snake.resetVars = function () {
     this.direction = 3;
     this.size = 3;
     this.snake = [];
     this.apple = [];
+}
+snake.collision = function(cella, cellb) {
+    if (cella[0] !== cellb[0]) return false;
+    if (cella[1] !== cellb[1]) return false;
+    return true;
+}
+snake.collisions = function(cells, cell) {
+    for (let c of cells) {
+        if (this.collision(c, cell)) {
+            return true;
+        }
+    }
+    return false;
 }
 snake.generateSnake = function() {
     for (let i = this.size - 1; i >= 0; i--) {
@@ -73,7 +87,7 @@ snake.generateApple = function() {
         Math.floor(Math.random() * 15),
         Math.floor(Math.random() * 15)
     ];
-    while (this.snake.includes(this.apple)) {
+    while (this.collisions(this.snake, this.apple)) {
         this.apple = [
             Math.floor(Math.random() * 15),
             Math.floor(Math.random() * 15)
@@ -117,24 +131,28 @@ snake.drawApple = function() {
     );
 }
 snake.tick = function() {
-    // take input
-    // if ()
+    this.movementCooldown = false;
 
-
-    // move snake
     let newSnakeCell = [
         this.snake[this.size - 1][0] + this.directions[this.direction][0],
         this.snake[this.size - 1][1] + this.directions[this.direction][1]
     ];
 
-    if (this.apple === newSnakeCell) {
+    if (this.collision(newSnakeCell, this.apple)) {
+        this.generateApple();
+        this.drawApple();
         this.size += 1;
     } else {
         this.snake.shift();
     }
 
-    if (this.snake.includes(newSnakeCell)) {
-        // DIE
+    if (this.collisions(this.snake, newSnakeCell) ||
+        newSnakeCell[0] < 0 || 
+        newSnakeCell[1] < 0 || 
+        newSnakeCell[0] >= 15 ||
+        newSnakeCell[1] >= 15
+    ) {
+        console.log("DIE");
     }
 
     this.snake.push(newSnakeCell);
@@ -144,20 +162,23 @@ snake.tick = function() {
     this.drawSnake();
     this.drawApple();
 }
-snakeKeyDownHandler = function(e) {
-    console.log("INPUT");
-    for (let i = 0; i < 4; i++) {
-        if (e.key === snake.inputKeys[i]) {
-            console.log(i);
-            snake.direction = i;
-        }
-    }
-}
 snake.run = function() {
     console.log("SNAKE");
 
     // add inputs
-    document.addEventListener("keydown", snakeKeyDownHandler, false);
+    document.addEventListener("keydown", function(e) {
+        for (let i = 0; i < 4; i++) {
+            if (e.key === snake.inputKeys[i]) {
+                if (snake.movementCooldown) continue;
+                if ((i + 2) % 4 === snake.direction) continue;
+                snake.movementCooldown = true;
+                snake.direction = i;
+            }
+        }
+        if (e.key === "Enter") {
+            window.close();
+        }
+    });
 
     this.resetVars();
     this.generateSnake();
@@ -170,7 +191,7 @@ snake.run = function() {
 
     setInterval(function() {
         snake.tick();
-    }, 500);
+    }, 200);
 }
 
 snake.button.onclick = function() {
