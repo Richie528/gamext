@@ -86,12 +86,12 @@ body {
 }
 
 .game-title {
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .key-icon {
     display: inline-block;
-    border: 1px solid var(--crust);
+    border: 1px solid var(--surface);
     color: var(--subtext);
     padding: 1px;
     margin: 2px 2px 8px 0px;
@@ -120,6 +120,26 @@ body {
     z-index: 10;
     margin-bottom: 2px;
     opacity: 100%;
+}
+
+.try-again {
+    padding: 5px 8px 5px 8px;
+    border-radius: 5px;
+
+    border: 1px solid var(--subtext);
+    background-color: var(--mantle);
+    color: var(--text);
+
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.try-again:hover {
+    background-color: var(--crust);
+}
+
+.try-again:active {
+    background-color: var(--surface);
 }
 
 .death-screen-background {

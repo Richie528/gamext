@@ -1,10 +1,29 @@
 let rootElement = document.querySelector(":root");
 let homeScreen = document.getElementById("home-screen");
 
+// STORAGE
+function read(key) {
+    return localStorage.getItem(key);
+}
+function readInt(key) {
+    return parseInt(localStorage.getItem(key));
+}
+function write(key, value) {
+    localStorage.setItem(key, value);
+}
+function readWrite(key, value) {
+    if (read(key) === null) write(key, value);
+    return read(key);
+}
+function readWriteInt(key, value) {
+    if (read(key) === null) write(key, value);
+    return readInt(key);
+}
+
 // THEMES
 
 let themeButton = document.querySelector(".theme-button");
-let currentTheme = 0;
+let currentTheme = readWriteInt("theme", 0);
 let themeName = ["light", "dark"];
 let themeKeys = ["--base", "--mantle", "--crust", "--surface", "--green", "--red", "--text", "--subtext"];
 let lightMode = ["#eff1f5", "#e6e9ef", "#dce0e8", "#acb0be", "#a6d189", "#e78284", "#4c4f69", "#8f91a0"];
@@ -21,10 +40,11 @@ function displayTheme() {
 }
 function toggleTheme() {
     currentTheme = (currentTheme) ? 0 : 1;
+    write("theme", currentTheme);
     displayTheme();
 }
 function colour(key) {
-    if (currentTheme == 0) return lightMode[themeKeys.indexOf(key)];
+    if (currentTheme === 0) return lightMode[themeKeys.indexOf(key)];
     return darkMode[themeKeys.indexOf(key)];
 }
 
@@ -59,7 +79,7 @@ snake.scaleY = 298 / 15;
 snake.cellX = 298 / 15 - 1;
 snake.cellY = 298 / 15 - 1;
 
-snake.highScore = 3;
+snake.highScore = readWriteInt("snake-high-score", 3);
 snake.direction = 3;
 snake.size = 3;
 snake.snake = [];
@@ -115,6 +135,7 @@ snake.die = function() {
     this.deathScreen.style.visibility = "visible";
 }
 snake.writeScores = function() {
+    write("snake-high-score", this.highScore);
     this.highScoreText.textContent = this.highScore.toString();
     this.scoreText.textContent = this.size.toString();
     this.deathScreenScore.textContent = this.size.toString();
@@ -123,7 +144,7 @@ snake.clearScreen = function() {
     this.context.clearRect(0, 0, 300, 300);
 }
 snake.drawBorders = function() {
-    this.context.strokeStyle = colour("--text");
+    this.context.strokeStyle = colour("--subtext");
     this.context.lineWidth = 2;
     this.context.moveTo(0, 0);
     this.context.lineTo(300, 0);
@@ -193,25 +214,31 @@ snake.tick = function() {
     this.draw();
     this.writeScores();
 }
+snake.listener = function(e) {
+    for (let i = 0; i < 4; i++) {
+        if (e.key === snake.inputKeys[i]) {
+            if (snake.movementCooldown) continue;
+            if ((i + 2) % 4 === snake.direction) continue;
+            snake.movementCooldown = true;
+            snake.direction = i;
+        }
+    }
+    if (e.key === "Enter") {
+        window.close();
+    }
+    if (e.key === "q") {
+        clearInterval(snake.interval);
+        snake.reset();
+        document.removeEventListener("keydown", snake.listener);
+        snake.screen.style.visibility = "hidden";
+        homeScreen.style.visibility = "visible";
+    }
+}
 snake.run = function() {
-    console.log("SNAKE");
-
     homeScreen.style.visibility = "hidden";
     snake.screen.style.visibility = "visible";
 
-    document.addEventListener("keydown", function(e) {
-        for (let i = 0; i < 4; i++) {
-            if (e.key === snake.inputKeys[i]) {
-                if (snake.movementCooldown) continue;
-                if ((i + 2) % 4 === snake.direction) continue;
-                snake.movementCooldown = true;
-                snake.direction = i;
-            }
-        }
-        if (e.key === "Enter") {
-            window.close();
-        }
-    });
+    document.addEventListener("keydown", this.listener);
     
     this.tryAgainButton.onclick = function() {
         snake.reset();
@@ -221,7 +248,7 @@ snake.run = function() {
     this.draw();
     this.writeScores();
 
-    setInterval(function() {
+    this.interval = setInterval(function() {
         snake.tick();
     }, 200);
 }
