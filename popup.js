@@ -43,6 +43,9 @@ snake.button = document.getElementById("snake-button");
 snake.canvas = document.getElementById("snake-canvas");
 snake.highScoreText = document.getElementById("snake-high-score");
 snake.scoreText = document.getElementById("snake-score");
+snake.deathScreen = document.getElementById("snake-death-screen");
+snake.deathScreenScore = document.getElementById("snake-death-screen-score");
+snake.tryAgainButton = document.getElementById("snake-try-again");
 snake.context = snake.canvas.getContext("2d");
 snake.context.scale(1, 0.5);
 
@@ -100,12 +103,21 @@ snake.generateApple = function() {
         ];
     }
 }
+snake.reset = function() {
+    this.resetVars();
+    this.generateSnake();
+    this.generateApple();
+    this.dead = false;
+    this.deathScreen.style.visibility = "hidden";
+}
 snake.die = function() {
     this.dead = true;
+    this.deathScreen.style.visibility = "visible";
 }
 snake.writeScores = function() {
     this.highScoreText.textContent = this.highScore.toString();
     this.scoreText.textContent = this.size.toString();
+    this.deathScreenScore.textContent = this.size.toString();
 }
 snake.clearScreen = function() {
     this.context.clearRect(0, 0, 300, 300);
@@ -200,10 +212,12 @@ snake.run = function() {
             window.close();
         }
     });
+    
+    this.tryAgainButton.onclick = function() {
+        snake.reset();
+    }
 
-    this.resetVars();
-    this.generateSnake();
-    this.generateApple();
+    this.reset();
     this.draw();
     this.writeScores();
 
@@ -215,3 +229,5 @@ snake.run = function() {
 snake.button.onclick = function() {
     snake.run();
 }
+
+//
