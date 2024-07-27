@@ -41,17 +41,22 @@ let snake = {};
 snake.screen = document.getElementById("snake-screen");
 snake.button = document.getElementById("snake-button");
 snake.canvas = document.getElementById("snake-canvas");
+snake.highScoreText = document.getElementById("snake-high-score");
+snake.scoreText = document.getElementById("snake-score");
 snake.context = snake.canvas.getContext("2d");
 snake.context.scale(1, 0.5);
 
 snake.inputKeys = ["w", "a", "s", "d"];
 snake.directions = [[0, -1], [-1, 0], [0, 1], [1, 0]];
 snake.startPos = [4, 7];
-snake.offsetX = 2.5;
-snake.offsetY = 2.5;
-snake.scaleX = 295 / 15;
-snake.scaleY = 295 / 15;
+snake.offsetX = 2;
+snake.offsetY = 2;
+snake.scaleX = 298 / 15;
+snake.scaleY = 298 / 15;
+snake.cellX = 298 / 15 - 1;
+snake.cellY = 298 / 15 - 1;
 
+snake.highScore = 3;
 snake.direction = 3;
 snake.size = 3;
 snake.snake = [];
@@ -94,6 +99,10 @@ snake.generateApple = function() {
         ];
     }
 }
+snake.writeScores = function() {
+    this.highScoreText.textContent = this.highScore.toString();
+    this.scoreText.textContent = this.size.toString();
+}
 snake.resetScreen = function() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 }
@@ -102,7 +111,7 @@ snake.clearScreen = function() {
 }
 snake.drawBorders = function() {
     this.context.strokeStyle = colour("--text");
-    this.context.lineWidth = 5;
+    this.context.lineWidth = 2;
     this.context.moveTo(0, 0);
     this.context.lineTo(300, 0);
     this.context.lineTo(300, 300);
@@ -116,8 +125,8 @@ snake.drawSnake = function() {
         this.context.fillRect(
             this.offsetX + this.snake[i][0] * this.scaleX,
             this.offsetY + this.snake[i][1] * this.scaleY,
-            this.scaleX,
-            this.scaleY
+            this.cellX,
+            this.cellY
         );
     }
 }
@@ -126,8 +135,8 @@ snake.drawApple = function() {
     this.context.fillRect(
         this.offsetX + this.apple[0] * this.scaleX,
         this.offsetY + this.apple[1] * this.scaleY,
-        this.scaleX,
-        this.scaleY
+        this.cellX,
+        this.cellY
     );
 }
 snake.tick = function() {
@@ -142,6 +151,7 @@ snake.tick = function() {
         this.generateApple();
         this.drawApple();
         this.size += 1;
+        this.highScore = Math.max(this.highScore, this.size);
     } else {
         this.snake.shift();
     }
@@ -161,6 +171,7 @@ snake.tick = function() {
     this.clearScreen();
     this.drawSnake();
     this.drawApple();
+    this.writeScores();
 }
 snake.run = function() {
     console.log("SNAKE");
@@ -188,6 +199,8 @@ snake.run = function() {
     this.drawBorders();
     this.drawSnake();
     this.drawApple();
+
+    this.writeScores();
 
     setInterval(function() {
         snake.tick();

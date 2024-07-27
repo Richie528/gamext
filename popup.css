@@ -87,7 +87,6 @@ body {
 
 .game-title {
     font-size: 16px;
-    padding: 3px;
 }
 
 .key-icon {
@@ -95,7 +94,7 @@ body {
     border: 1px solid var(--crust);
     color: var(--subtext);
     padding: 1px;
-    margin: 2px;
+    margin: 2px 2px 8px 0px;
     white-space: pre;
 }
 

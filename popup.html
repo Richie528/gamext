@@ -37,9 +37,11 @@
     <div class="screen" id="snake-screen" style="visibility: hidden">
         <div class="game-title">SNAKE</div>
         <div class="game-instructions">
-            <div><div class="key-icon"> esc </div> close game</div>
-            <div><div class="key-icon"> enter </div> close extension</div> 
-            <div><div class="key-icon"> w, a, s, d </div> up, left, down, right</div>
+            <div><div class="key-icon"> w a s d </div> movement</div>
+        </div>
+        <div class="game-stats">
+            High score: <span id="snake-high-score"></span><br>
+            Score: <span id="snake-score"></span>
         </div>
         <canvas id="snake-canvas" class="game-canvas"></canvas>
     </div>
