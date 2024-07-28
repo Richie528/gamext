@@ -87,12 +87,6 @@ snake.apple = [];
 snake.movementCooldown = false;
 snake.dead = false;
 
-snake.resetVars = function () {
-    this.direction = 3;
-    this.size = 3;
-    this.snake = [];
-    this.apple = [];
-}
 snake.collision = function(cella, cellb) {
     if (cella[0] !== cellb[0]) return false;
     if (cella[1] !== cellb[1]) return false;
@@ -124,7 +118,10 @@ snake.generateApple = function() {
     }
 }
 snake.reset = function() {
-    this.resetVars();
+    this.direction = 3;
+    this.size = 3;
+    this.snake = [];
+    this.apple = [];
     this.generateSnake();
     this.generateApple();
     this.dead = false;
@@ -210,7 +207,6 @@ snake.tick = function() {
         }
     }
 
-    // draw
     this.draw();
     this.writeScores();
 }
@@ -272,9 +268,30 @@ pong.tryAgainButton = document.getElementById("pong-try-again");
 pong.context = pong.canvas.getContext("2d");
 pong.context.scale(1, 0.5);
 
+pong.ball = {};
+pong.ball.width = 8;
+pong.ball.height = 8;
+pong.ball.posX = 150 - pong.ball.width / 2;
+pong.ball.posY = 150 - pong.ball.height / 2;
+pong.ball.velocityX = 1;
+pong.ball.velocityY = 1;
+
+pong.playerPaddle = {};
+
+pong.enemyPaddle = {};
+
 pong.highScore = readWriteInt("pong-high-score", 0);
 pong.score = 0;
+pong.dead = false;
 
+pong.reset = function() {
+    this.dead = false;
+    this.deathScreen.style.visibility = "hidden";
+}
+pong.die = function() {
+    this.dead = true;
+    this.deathScreen.style.visibility = "visible";
+}
 pong.writeScores = function() {
     write("pong-high-score", this.highScore);
     this.highScoreText.textContent = this.highScore.toString();
@@ -294,19 +311,48 @@ pong.drawBorders = function() {
     this.context.lineTo(0, 0);
     this.context.stroke();
 }
+pong.drawPaddles = function() {
+
+}
+pong.drawBall = function() {
+    this.context.fillStyle = colour("--red");
+    this.context.fillRect(
+        this.ball.posX,
+        this.ball.posY,
+        this.ball.width,
+        this.ball.height
+    )
+}
 pong.draw = function() {
     this.clearScreen();
     this.drawBorders();
+    this.drawPaddles();
+    this.drawBall();
 }
 pong.tick = function() {
+    if (!this.dead) {
 
+    }
+
+    this.draw();
+    this.writeScores();
 }
 pong.listener = function(e) {
+    if (e.key == "a") {
+        // move left
+    }
+    if (e.key == "d") {
+        // move right
+    }
     if (e.key == "Enter") {
         window.close();
     }
     if (e.key == "q") {
-        // QUIT
+        clearInterval(pong.interval);
+        pong.reset();
+        document.removeEventListener("keydown", pong.listener);
+        pong.screen.style.visibility = "hidden";
+        homeScreen.style.visibility = "visible";
     }
 }
 pong.run = function() {
@@ -316,9 +362,10 @@ pong.run = function() {
     document.addEventListener("keydown", this.listener);
     
     this.tryAgainButton.onclick = function() {
-        // RESET
+        pong.reset();
     }
 
+    this.reset();
     this.draw();
     this.writeScores();
 
