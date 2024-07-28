@@ -236,7 +236,7 @@ snake.listener = function(e) {
 }
 snake.run = function() {
     homeScreen.style.visibility = "hidden";
-    snake.screen.style.visibility = "visible";
+    this.screen.style.visibility = "visible";
 
     document.addEventListener("keydown", this.listener);
     
@@ -257,4 +257,76 @@ snake.button.onclick = function() {
     snake.run();
 }
 
-//
+// PONG
+
+let pong = {};
+
+pong.screen = document.getElementById("pong-screen");
+pong.button = document.getElementById("pong-button");
+pong.canvas = document.getElementById("pong-canvas");
+pong.highScoreText = document.getElementById("pong-high-score");
+pong.scoreText = document.getElementById("pong-score");
+pong.deathScreen = document.getElementById("pong-death-screen");
+pong.deathScreenScore = document.getElementById("pong-death-screen-score");
+pong.tryAgainButton = document.getElementById("pong-try-again");
+pong.context = pong.canvas.getContext("2d");
+pong.context.scale(1, 0.5);
+
+pong.highScore = readWriteInt("pong-high-score", 0);
+pong.score = 0;
+
+pong.writeScores = function() {
+    write("pong-high-score", this.highScore);
+    this.highScoreText.textContent = this.highScore.toString();
+    this.scoreText.textContent = this.score.toString();
+    this.deathScreenScore.textContent = this.score.toString();
+}
+pong.clearScreen = function() {
+    this.context.clearRect(0, 0, 300, 300);
+}
+pong.drawBorders = function() {
+    this.context.strokeStyle = colour("--subtext");
+    this.context.lineWidth = 2;
+    this.context.moveTo(0, 0);
+    this.context.lineTo(300, 0);
+    this.context.lineTo(300, 300);
+    this.context.lineTo(0, 300);
+    this.context.lineTo(0, 0);
+    this.context.stroke();
+}
+pong.draw = function() {
+    this.clearScreen();
+    this.drawBorders();
+}
+pong.tick = function() {
+
+}
+pong.listener = function(e) {
+    if (e.key == "Enter") {
+        window.close();
+    }
+    if (e.key == "q") {
+        // QUIT
+    }
+}
+pong.run = function() {
+    homeScreen.style.visibility = "hidden";
+    this.screen.style.visibility = "visible";
+
+    document.addEventListener("keydown", this.listener);
+    
+    this.tryAgainButton.onclick = function() {
+        // RESET
+    }
+
+    this.draw();
+    this.writeScores();
+
+    this.interval = setInterval(function() {
+        pong.tick();
+    }, 200);
+}
+
+pong.button.onclick = function() {
+    pong.run();
+}

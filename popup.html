@@ -15,6 +15,7 @@
         </div>
         <div class="game-buttons">
             <button class="game-button" id="snake-button">🐍Snake</button>
+            <button class="game-button" id="pong-button">🏓Pong</button>
 
             <button class="game-button">drink</button>
             <button class="game-button">hamburger</button>
@@ -34,6 +35,7 @@
         </div>
     </div>
 
+    <!-- SNAKE -->
     <div class="screen" id="snake-screen" style="visibility: hidden">
         <div class="game-title">Snake🐍</div>
         <div class="game-instructions">
@@ -51,6 +53,25 @@
         </div>
         <canvas id="snake-canvas" class="game-canvas"></canvas>
     </div>
+    <!-- PONG -->
+    <div class="screen" id="pong-screen" style="visibility: hidden">
+        <div class="game-title">Pong🏓</div>
+        <div class="game-instructions">
+            <div><div class="key-icon"> a d </div> movement</div>
+        </div>
+        <div class="game-stats">
+            High score: <span id="pong-high-score"></span><br>
+            Score: <span id="pong-score"></span>
+        </div>
+        <div id="pong-death-screen" class="death-screen">
+            <h3>You died!</h3>
+            <p>Score: <span id="pong-death-screen-score"></span></p>
+            <button id="pong-try-again" class="try-again">Try again</button>
+            <div class="death-screen-background"></div>
+        </div>
+        <canvas id="pong-canvas" class="game-canvas"></canvas>
+    </div>
+
     <script src="popup.js"></script>
 </body>
 </html>
