@@ -272,17 +272,30 @@ pong.ball = {};
 pong.ball.width = 8;
 pong.ball.height = 8;
 pong.ball.posX = 150 - pong.ball.width / 2;
-pong.ball.posY = 150 - pong.ball.height / 2;
+pong.ball.posY = 250 - pong.ball.height / 2;
 pong.ball.velocityX = 1;
-pong.ball.velocityY = 1;
+pong.ball.velocityY = -1;
+pong.ball.speed = 1;
 
 pong.playerPaddle = {};
+pong.playerPaddle.width = 60;
+pong.playerPaddle.height = 8;
+pong.playerPaddle.posX = 150 - pong.playerPaddle.width / 2;
+pong.playerPaddle.posY = 275 - pong.playerPaddle.height / 2;
+pong.playerPaddle.speed = 3;
 
 pong.enemyPaddle = {};
+pong.enemyPaddle.width = 60;
+pong.enemyPaddle.height = 8;
+pong.enemyPaddle.posX = 150 - pong.enemyPaddle.width / 2;
+pong.enemyPaddle.posY = 25 - pong.enemyPaddle.height / 2;
+pong.enemyPaddle.speed = 3;
 
 pong.highScore = readWriteInt("pong-high-score", 0);
 pong.score = 0;
 pong.dead = false;
+pong.left = false;
+pong.right = false;
 
 pong.reset = function() {
     this.dead = false;
@@ -301,6 +314,13 @@ pong.writeScores = function() {
 pong.clearScreen = function() {
     this.context.clearRect(0, 0, 300, 300);
 }
+pong.keepPaddleInScreen = function() {
+    this.playerPaddle.posX = Math.max(this.playerPaddle.posX, 0);
+    this.playerPaddle.posX = Math.min(this.playerPaddle.posX, 300 - this.playerPaddle.width);
+
+    this.enemyPaddle.posX = Math.max(this.enemyPaddle.posX, 0);
+    this.enemyPaddle.posX = Math.min(this.enemyPaddle.posX, 300 - this.enemyPaddle.width);
+}
 pong.drawBorders = function() {
     this.context.strokeStyle = colour("--subtext");
     this.context.lineWidth = 2;
@@ -312,7 +332,19 @@ pong.drawBorders = function() {
     this.context.stroke();
 }
 pong.drawPaddles = function() {
-
+    this.context.fillStyle = colour("--green");
+    this.context.fillRect(
+        this.playerPaddle.posX,
+        this.playerPaddle.posY,
+        this.playerPaddle.width,
+        this.playerPaddle.height
+    )
+    this.context.fillRect(
+        this.enemyPaddle.posX,
+        this.enemyPaddle.posY,
+        this.enemyPaddle.width,
+        this.enemyPaddle.height
+    )
 }
 pong.drawBall = function() {
     this.context.fillStyle = colour("--red");
@@ -331,19 +363,22 @@ pong.draw = function() {
 }
 pong.tick = function() {
     if (!this.dead) {
+        if (this.left) this.playerPaddle.posX -= this.playerPaddle.speed;
+        if (this.right) this.playerPaddle.posX += this.playerPaddle.speed;
 
+        this.ball.posX += this.ball.velocityX * this.ball.speed;
+        this.ball.posY += this.ball.velocityY * this.ball.speed;
+
+
+        this.keepPaddleInScreen();
     }
 
     this.draw();
     this.writeScores();
 }
-pong.listener = function(e) {
-    if (e.key == "a") {
-        // move left
-    }
-    if (e.key == "d") {
-        // move right
-    }
+pong.keyDownListener = function(e) {
+    if (e.key == "a") pong.left = true;
+    if (e.key == "d") pong.right = true;
     if (e.key == "Enter") {
         window.close();
     }
@@ -355,11 +390,16 @@ pong.listener = function(e) {
         homeScreen.style.visibility = "visible";
     }
 }
+pong.keyUpListener = function(e) {
+    if (e.key == "a") pong.left = false;
+    if (e.key == "d") pong.right = false;
+}
 pong.run = function() {
     homeScreen.style.visibility = "hidden";
     this.screen.style.visibility = "visible";
 
-    document.addEventListener("keydown", this.listener);
+    document.addEventListener("keydown", this.keyDownListener);
+    document.addEventListener("keyup", this.keyUpListener);
     
     this.tryAgainButton.onclick = function() {
         pong.reset();
@@ -371,7 +411,7 @@ pong.run = function() {
 
     this.interval = setInterval(function() {
         pong.tick();
-    }, 200);
+    }, 10);
 }
 
 pong.button.onclick = function() {
