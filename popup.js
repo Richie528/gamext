@@ -289,15 +289,31 @@ pong.enemyPaddle.width = 60;
 pong.enemyPaddle.height = 8;
 pong.enemyPaddle.posX = 150 - pong.enemyPaddle.width / 2;
 pong.enemyPaddle.posY = 25 - pong.enemyPaddle.height / 2;
-pong.enemyPaddle.speed = 3;
 
 pong.highScore = readWriteInt("pong-high-score", 0);
 pong.score = 0;
+pong.ticks = 0;
 pong.dead = false;
 pong.left = false;
 pong.right = false;
 
 pong.reset = function() {
+    this.ticks = 0;
+
+    this.ball.posX = 150 - this.ball.width / 2;
+    this.ball.posY = 250 - this.ball.height / 2;
+    this.ball.velocityY = -1;
+    this.ball.velocityX = (Math.random() > 0.5) ? -1 : 1;
+    this.ball.speed = 1;
+
+    this.playerPaddle.posX = 150 - this.playerPaddle.width / 2;
+    this.playerPaddle.posY = 275 - this.playerPaddle.height / 2;
+
+    this.enemyPaddle.posX = 150 - this.enemyPaddle.width / 2;
+    this.enemyPaddle.posY = 25 - this.enemyPaddle.height / 2;
+
+    this.score = 0;
+
     this.dead = false;
     this.deathScreen.style.visibility = "hidden";
 }
@@ -320,6 +336,34 @@ pong.keepPaddleInScreen = function() {
 
     this.enemyPaddle.posX = Math.max(this.enemyPaddle.posX, 0);
     this.enemyPaddle.posX = Math.min(this.enemyPaddle.posX, 300 - this.enemyPaddle.width);
+}
+pong.ballCollisions = function() {
+    if (this.ball.posX <= 0) {
+        this.ball.posX = 0 - this.ball.posX;
+        this.ball.velocityX *= -1;
+    }
+    if (this.ball.posX + this.ball.width >= 300) {
+        this.ball.posX = 600 - this.ball.posX - 2 * this.ball.width;
+        this.ball.velocityX *= -1;
+    }
+    if (this.ball.posY <= this.enemyPaddle.posY + this.enemyPaddle.height) {
+        this.ball.posY = 2 * this.enemyPaddle.posY + 2 * this.enemyPaddle.height - this.ball.posY;
+        this.ball.velocityY *= -1;
+    }
+
+    if (this.ball.posY + this.ball.height > this.playerPaddle.posY && this.ball.posY < this.playerPaddle.posY + this.playerPaddle.height) {
+        // side collision
+        
+    }
+    if (this.ball.posX + this.ball.width > this.playerPaddle.posX && this.ball.posX < this.playerPaddle.poxX + this.playerPaddle.width) {
+        // top collision
+
+    }
+
+
+    if (this.ball.posY + this.ball.height >= 300) {
+        this.die();
+    }
 }
 pong.drawBorders = function() {
     this.context.strokeStyle = colour("--subtext");
@@ -363,11 +407,20 @@ pong.draw = function() {
 }
 pong.tick = function() {
     if (!this.dead) {
+        this.ticks += 1;
+        if (this.ticks % 500 == 0) {
+            this.ball.speed += 0.1;
+        }
+
         if (this.left) this.playerPaddle.posX -= this.playerPaddle.speed;
         if (this.right) this.playerPaddle.posX += this.playerPaddle.speed;
 
         this.ball.posX += this.ball.velocityX * this.ball.speed;
         this.ball.posY += this.ball.velocityY * this.ball.speed;
+
+        this.ballCollisions();
+
+        this.enemyPaddle.posX = (this.ball.posX + this.ball.width / 2) - this.enemyPaddle.width / 2;
 
 
         this.keepPaddleInScreen();
@@ -417,3 +470,5 @@ pong.run = function() {
 pong.button.onclick = function() {
     pong.run();
 }
+
+
