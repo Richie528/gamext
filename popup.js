@@ -353,11 +353,31 @@ pong.ballCollisions = function() {
 
     if (this.ball.posY + this.ball.height > this.playerPaddle.posY && this.ball.posY < this.playerPaddle.posY + this.playerPaddle.height) {
         // side collision
-        
+        if (this.ball.posX + this.ball.width >= this.playerPaddle.posX) {
+            if (this.ball.posX + this.ball.width - this.ball.velocityX < this.playerPaddle.posX) {
+                this.ball.posX = -this.ball.width + this.playerPaddle.posX;
+                this.ball.velocityX *= -1;
+            }
+        }
+        if (this.ball.posX <= this.playerPaddle.posX + this.playerPaddle.width) {
+            if (this.ball.posX - this.ball.velocityX > this.playerPaddle.posX + this.playerPaddle.width) {
+                this.ball.posX = this.playerPaddle.posX + this.playerPaddle.width;
+                this.ball.velocityX *= -1;
+            }
+        }
     }
-    if (this.ball.posX + this.ball.width > this.playerPaddle.posX && this.ball.posX < this.playerPaddle.poxX + this.playerPaddle.width) {
+    if (this.ball.posX + this.ball.width > this.playerPaddle.posX && this.ball.posX < this.playerPaddle.posX + this.playerPaddle.width) {
         // top collision
+        if (this.ball.posY + this.ball.height >= this.playerPaddle.posY) {
+            if (this.ball.posY + this.ball.height - this.ball.velocityY < this.playerPaddle.posY) {
+                this.ball.posY = -this.ball.height + this.playerPaddle.posY;
+                this.ball.velocityY *= -1;
 
+                this.score += 1;
+                this.highScore = Math.max(this.highScore, this.score);
+                this.writeScores();
+            }
+        }
     }
 
 
@@ -408,7 +428,8 @@ pong.draw = function() {
 pong.tick = function() {
     if (!this.dead) {
         this.ticks += 1;
-        if (this.ticks % 500 == 0) {
+        if (this.ticks == 500) {
+            this.ticks = 0;
             this.ball.speed += 0.1;
         }
 
@@ -421,7 +442,6 @@ pong.tick = function() {
         this.ballCollisions();
 
         this.enemyPaddle.posX = (this.ball.posX + this.ball.width / 2) - this.enemyPaddle.width / 2;
-
 
         this.keepPaddleInScreen();
     }
@@ -438,7 +458,8 @@ pong.keyDownListener = function(e) {
     if (e.key == "q") {
         clearInterval(pong.interval);
         pong.reset();
-        document.removeEventListener("keydown", pong.listener);
+        document.removeEventListener("keydown", pong.keyDownListener);
+        document.removeEventListener("keyup", pong.keyUpListener);
         pong.screen.style.visibility = "hidden";
         homeScreen.style.visibility = "visible";
     }
@@ -464,7 +485,7 @@ pong.run = function() {
 
     this.interval = setInterval(function() {
         pong.tick();
-    }, 10);
+    }, 30);
 }
 
 pong.button.onclick = function() {
