@@ -275,14 +275,14 @@ pong.ball.posX = 150 - pong.ball.width / 2;
 pong.ball.posY = 250 - pong.ball.height / 2;
 pong.ball.velocityX = 1;
 pong.ball.velocityY = -1;
-pong.ball.speed = 1;
+pong.ball.speed = 10;
 
 pong.playerPaddle = {};
 pong.playerPaddle.width = 60;
 pong.playerPaddle.height = 8;
 pong.playerPaddle.posX = 150 - pong.playerPaddle.width / 2;
 pong.playerPaddle.posY = 275 - pong.playerPaddle.height / 2;
-pong.playerPaddle.speed = 3;
+pong.playerPaddle.speed = 10;
 
 pong.enemyPaddle = {};
 pong.enemyPaddle.width = 60;
@@ -304,7 +304,7 @@ pong.reset = function() {
     this.ball.posY = 250 - this.ball.height / 2;
     this.ball.velocityY = -1;
     this.ball.velocityX = (Math.random() > 0.5) ? -1 : 1;
-    this.ball.speed = 1;
+    this.ball.speed = 10;
 
     this.playerPaddle.posX = 150 - this.playerPaddle.width / 2;
     this.playerPaddle.posY = 275 - this.playerPaddle.height / 2;
@@ -354,13 +354,13 @@ pong.ballCollisions = function() {
     if (this.ball.posY + this.ball.height > this.playerPaddle.posY && this.ball.posY < this.playerPaddle.posY + this.playerPaddle.height) {
         // side collision
         if (this.ball.posX + this.ball.width >= this.playerPaddle.posX) {
-            if (this.ball.posX + this.ball.width - this.ball.velocityX < this.playerPaddle.posX) {
+            if (this.ball.posX + this.ball.width - this.ball.velocityX * this.ball.speed < this.playerPaddle.posX) {
                 this.ball.posX = -this.ball.width + this.playerPaddle.posX;
                 this.ball.velocityX *= -1;
             }
         }
         if (this.ball.posX <= this.playerPaddle.posX + this.playerPaddle.width) {
-            if (this.ball.posX - this.ball.velocityX > this.playerPaddle.posX + this.playerPaddle.width) {
+            if (this.ball.posX - this.ball.velocityX * this.ball.speed > this.playerPaddle.posX + this.playerPaddle.width) {
                 this.ball.posX = this.playerPaddle.posX + this.playerPaddle.width;
                 this.ball.velocityX *= -1;
             }
@@ -369,7 +369,7 @@ pong.ballCollisions = function() {
     if (this.ball.posX + this.ball.width > this.playerPaddle.posX && this.ball.posX < this.playerPaddle.posX + this.playerPaddle.width) {
         // top collision
         if (this.ball.posY + this.ball.height >= this.playerPaddle.posY) {
-            if (this.ball.posY + this.ball.height - this.ball.velocityY < this.playerPaddle.posY) {
+            if (this.ball.posY + this.ball.height - this.ball.velocityY * this.ball.speed < this.playerPaddle.posY) {
                 this.ball.posY = -this.ball.height + this.playerPaddle.posY;
                 this.ball.velocityY *= -1;
 
@@ -428,11 +428,10 @@ pong.draw = function() {
 pong.tick = function() {
     if (!this.dead) {
         this.ticks += 1;
-        if (this.ticks == 500) {
+        if (this.ticks == 100) {
             this.ticks = 0;
             this.ball.speed += 0.1;
         }
-
         if (this.left) this.playerPaddle.posX -= this.playerPaddle.speed;
         if (this.right) this.playerPaddle.posX += this.playerPaddle.speed;
 
@@ -485,7 +484,7 @@ pong.run = function() {
 
     this.interval = setInterval(function() {
         pong.tick();
-    }, 30);
+    }, 100);
 }
 
 pong.button.onclick = function() {
