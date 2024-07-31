@@ -491,4 +491,77 @@ pong.button.onclick = function() {
     pong.run();
 }
 
+// DINO
 
+let dino = {};
+
+dino.screen = document.getElementById("dino-screen");
+dino.button = document.getElementById("dino-button");
+dino.canvas = document.getElementById("dino-canvas");
+dino.highScoreText = document.getElementById("dino-high-score");
+dino.scoreText = document.getElementById("dino-score");
+dino.deathScreen = document.getElementById("dino-death-screen");
+dino.deathScreenScore = document.getElementById("dino-death-screen-score");
+dino.tryAgainButton = document.getElementById("dino-try-again");
+dino.context = dino.canvas.getContext("2d");
+dino.context.scale(1, 0.5);
+
+dino.highScore = readWriteInt("dino-high-score", 0);
+dino.score = 0;
+dino.dead = false;
+
+dino.reset = function() {
+    this.score = 0;
+
+    this.dead = false;
+    this.deathScreen.style.visibility = "hidden";
+}
+dino.die = function() {
+    this.dead = true;
+    this.deathScreen.style.visibility = "visible";
+}
+dino.writeScores = function() {
+    write("dino-high-score", this.highScore);
+    this.highScoreText.textContent = this.highScore.toString();
+    this.scoreText.textContent = this.score.toString();
+    this.deathScreenScore.textContent = this.score.toString();
+}
+dino.clearScreen = function() {
+    this.context.clearRect(0, 0, 300, 300);
+}
+dino.tick = function() {
+
+}
+dino.listener = function(e) {
+
+}
+dino.run = function() {
+    homeScreen.style.visibility = "hidden";
+    this.screen.style.visibility = "visible";
+
+    document.addEventListener("keydown", this.listener);
+    
+    this.tryAgainButton.onclick = function() {
+        dino.reset();
+    }
+
+    this.reset();
+
+    this.writeScores();
+
+    this.interval = setInterval(function() {
+        dino.tick();
+    }, 100);
+}
+
+dino.button.onclick = function() {
+    dino.run();
+}
+
+
+
+// DASH
+
+// HIGHWAY
+
+// 

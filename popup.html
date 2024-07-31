@@ -16,6 +16,7 @@
         <div class="game-buttons">
             <button class="game-button" id="snake-button">🐍Snake</button>
             <button class="game-button" id="pong-button">🏓Pong</button>
+            <button class="game-button" id="dino-button">🦖Dino</button>
 
 
 
@@ -24,7 +25,7 @@
             
         </div>
         <div class="theme-button">
-            ☼
+            
         </div>
     </div>
 
@@ -46,6 +47,7 @@
         </div>
         <canvas id="snake-canvas" class="game-canvas"></canvas>
     </div>
+
     <!-- PONG -->
     <div class="screen" id="pong-screen" style="visibility: hidden">
         <div class="game-title">Pong🏓</div>
@@ -63,6 +65,25 @@
             <div class="death-screen-background"></div>
         </div>
         <canvas id="pong-canvas" class="game-canvas"></canvas>
+    </div>
+
+    <!-- DINO -->
+    <div class="screen" id="dino-screen" style="visibility: hidden">
+        <div class="game-title">Dino🦖</div>
+        <div class="game-instructions">
+            <div><div class="key-icon"> space </div> jump</div>
+        </div>
+        <div class="game-stats">
+            High score: <span id="dino-high-score"></span><br>
+            Score: <span id="dino-score"></span>
+        </div>
+        <div id="dino-death-screen" class="death-screen">
+            <h3>You died!</h3>
+            <p>Score: <span id="dino-death-screen-score"></span></p>
+            <button id="dino-try-again" class="try-again">Try again</button>
+            <div class="death-screen-background"></div>
+        </div>
+        <canvas id="dino-canvas" class="game-canvas"></canvas>
     </div>
 
     <script src="popup.js"></script>
