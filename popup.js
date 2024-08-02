@@ -510,6 +510,12 @@ dino.highScore = readWriteInt("dino-high-score", 0);
 dino.score = 0;
 dino.dead = false;
 
+dino.rex = {};
+dino.rex.x = 75;
+dino.rex.y = 200;
+dino.rex.height = 30;
+dino.rex.width = 20;
+
 dino.reset = function() {
     this.score = 0;
 
@@ -529,11 +535,59 @@ dino.writeScores = function() {
 dino.clearScreen = function() {
     this.context.clearRect(0, 0, 300, 300);
 }
+dino.drawBorders = function() {
+    this.context.strokeStyle = colour("--subtext");
+    this.context.lineWidth = 2;
+    this.context.moveTo(0, 0);
+    this.context.lineTo(300, 0);
+    this.context.lineTo(300, 300);
+    this.context.lineTo(0, 300);
+    this.context.lineTo(0, 0);
+    this.context.stroke();
+}
+dino.drawBackDrop = function() {
+    this.context.fillStyle = colour("--text");
+    this.context.fillRect(
+        0,
+        230,
+        300,
+        1
+    );
+}
+dino.drawRex = function() {
+    this.context.fillStyle = colour("--green");
+    this.context.fillRect(
+        this.rex.x,
+        this.rex.y,
+        this.rex.width,
+        this.rex.height
+    );
+}
+dino.draw = function() {
+    this.clearScreen();
+    this.drawBorders();
+    this.drawBackDrop();
+    this.drawRex();
+}
 dino.tick = function() {
 
+    this.writeScores();
+    this.draw();
 }
 dino.listener = function(e) {
-
+    if (e.key == "space") {
+        // jump
+    }
+    if (e.key == "Enter") {
+        window.close();
+    }
+    if (e.key == "q") {
+        clearInterval(dino.interval);
+        dino.reset();
+        document.removeEventListener("keydown", dino.listener);
+        dino.screen.style.visibility = "hidden";
+        homeScreen.style.visibility = "visible";
+    }
 }
 dino.run = function() {
     homeScreen.style.visibility = "hidden";
@@ -546,7 +600,7 @@ dino.run = function() {
     }
 
     this.reset();
-
+    this.draw();
     this.writeScores();
 
     this.interval = setInterval(function() {
