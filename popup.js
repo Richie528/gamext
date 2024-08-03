@@ -428,7 +428,7 @@ pong.draw = function() {
 pong.tick = function() {
     if (!this.dead) {
         this.ticks += 1;
-        if (this.ticks == 100) {
+        if (this.ticks === 100) {
             this.ticks = 0;
             this.ball.speed += 0.1;
         }
@@ -449,12 +449,12 @@ pong.tick = function() {
     this.writeScores();
 }
 pong.keyDownListener = function(e) {
-    if (e.key == "a") pong.left = true;
-    if (e.key == "d") pong.right = true;
-    if (e.key == "Enter") {
+    if (e.key === "a") pong.left = true;
+    if (e.key === "d") pong.right = true;
+    if (e.key === "Enter") {
         window.close();
     }
-    if (e.key == "q") {
+    if (e.key === "q") {
         clearInterval(pong.interval);
         pong.reset();
         document.removeEventListener("keydown", pong.keyDownListener);
@@ -464,8 +464,8 @@ pong.keyDownListener = function(e) {
     }
 }
 pong.keyUpListener = function(e) {
-    if (e.key == "a") pong.left = false;
-    if (e.key == "d") pong.right = false;
+    if (e.key === "a") pong.left = false;
+    if (e.key === "d") pong.right = false;
 }
 pong.run = function() {
     homeScreen.style.visibility = "hidden";
@@ -513,6 +513,7 @@ dino.dead = false;
 dino.rex = {};
 dino.rex.x = 75;
 dino.rex.y = 200;
+dino.rex.velocity = 0;
 dino.rex.height = 30;
 dino.rex.width = 20;
 
@@ -531,6 +532,15 @@ dino.writeScores = function() {
     this.highScoreText.textContent = this.highScore.toString();
     this.scoreText.textContent = this.score.toString();
     this.deathScreenScore.textContent = this.score.toString();
+}
+dino.physics = function() {
+    this.rex.velocity += 2;
+    this.rex.y += this.rex.velocity;
+
+    if (this.rex.y >= 200) {
+        this.rex.y = 200;
+        this.rex.velocity = Math.min(this.rex.velocity, 0);
+    }
 }
 dino.clearScreen = function() {
     this.context.clearRect(0, 0, 300, 300);
@@ -570,18 +580,23 @@ dino.draw = function() {
     this.drawRex();
 }
 dino.tick = function() {
+    if (!this.dead) {
+        this.physics();
+    }
 
     this.writeScores();
     this.draw();
 }
 dino.listener = function(e) {
-    if (e.key == "space") {
-        // jump
+    if (e.key === " ") {
+        if (dino.rex.y === 200) {
+            dino.rex.velocity = -20;
+        }
     }
-    if (e.key == "Enter") {
+    if (e.key === "Enter") {
         window.close();
     }
-    if (e.key == "q") {
+    if (e.key === "q") {
         clearInterval(dino.interval);
         dino.reset();
         document.removeEventListener("keydown", dino.listener);
@@ -605,7 +620,7 @@ dino.run = function() {
 
     this.interval = setInterval(function() {
         dino.tick();
-    }, 100);
+    }, 30);
 }
 
 dino.button.onclick = function() {
